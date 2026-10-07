@@ -64,26 +64,21 @@ Visit `http://localhost:3000` in your browser.
 4. **Download** individual images or export as PDF
 
 ### Try Premium Trial
-Add `?premium=TRIAL` to the URL for a 30-day free trial of all premium features!
+*Premium features coming soon!*
 
 ## 💎 Pricing
 
-### Free Tier
-- ✅ 5 images per session
-- ✅ 20 images per day
-- ✅ Basic customization
-- ✅ PDF export (up to 3 pages)
-- ⚠️ Watermark on images
+**Currently Free!**
 
-### Premium - $9.99/month
+All features are free to use with no limits:
 - ✅ Unlimited images
 - ✅ No watermarks
+- ✅ Full customization
+- ✅ Unlimited PDF export
 - ✅ Custom font uploads
 - ✅ High resolution export
-- ✅ Unlimited PDF pages
-- ✅ Priority support
 
-[**Upgrade to Premium →**](#)
+*Premium subscription features may be added in the future.*
 
 ## 🛠️ Tech Stack
 

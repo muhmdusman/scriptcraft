@@ -3,14 +3,14 @@
  * Handles freemium features, usage tracking, and premium upgrades
  */
 
-// Free tier limits
+// Free tier limits (CURRENTLY DISABLED - Everything is free)
 const FREE_TIER_LIMITS = {
-  imagesPerSession: 5,
-  imagesPerDay: 20,
-  pdfPagesMax: 3,
-  customFonts: false,
-  watermark: true,
-  highResolution: false,
+  imagesPerSession: 999999, // Unlimited for now
+  imagesPerDay: 999999, // Unlimited for now
+  pdfPagesMax: 999999, // Unlimited for now
+  customFonts: true, // Enabled for everyone
+  watermark: false, // No watermark for now
+  highResolution: true, // Enabled for everyone
 };
 
 // Premium tier features
@@ -76,46 +76,13 @@ export function isPremiumUser() {
 }
 
 /**
- * Track image generation
+ * Track image generation (limits disabled for now)
  */
 export function trackImageGeneration() {
-  if (isPremiumUser()) {
-    return { allowed: true, remaining: 'unlimited' };
-  }
-
-  const sessionCount = parseInt(localStorage.getItem(STORAGE_KEYS.sessionCount) || '0');
-  const dailyCount = parseInt(localStorage.getItem(STORAGE_KEYS.dailyCount) || '0');
-
-  if (sessionCount >= FREE_TIER_LIMITS.imagesPerSession) {
-    return {
-      allowed: false,
-      reason: 'session_limit',
-      message: `Free tier limited to ${FREE_TIER_LIMITS.imagesPerSession} images per session. Refresh the page or upgrade to Premium for unlimited access!`,
-    };
-  }
-
-  if (dailyCount >= FREE_TIER_LIMITS.imagesPerDay) {
-    return {
-      allowed: false,
-      reason: 'daily_limit',
-      message: `Daily limit of ${FREE_TIER_LIMITS.imagesPerDay} images reached. Come back tomorrow or upgrade to Premium for unlimited access!`,
-    };
-  }
-
-  // Increment counters
-  localStorage.setItem(STORAGE_KEYS.sessionCount, String(sessionCount + 1));
-  localStorage.setItem(STORAGE_KEYS.dailyCount, String(dailyCount + 1));
-
-  const remaining = Math.min(
-    FREE_TIER_LIMITS.imagesPerSession - (sessionCount + 1),
-    FREE_TIER_LIMITS.imagesPerDay - (dailyCount + 1)
-  );
-
+  // All users have unlimited access for now
   return {
     allowed: true,
-    remaining,
-    sessionCount: sessionCount + 1,
-    dailyCount: dailyCount + 1,
+    remaining: 'unlimited',
   };
 }
 
@@ -270,49 +237,21 @@ export function showUpgradeModal(reason = 'limit_reached') {
 }
 
 /**
- * Add watermark to free tier images
+ * Add watermark to free tier images (disabled for now)
  */
 export function addWatermark(canvas, ctx) {
-  if (isPremiumUser()) {
-    return;
-  }
-
-  const watermarkText = 'ScriptCraft.app';
-  const fontSize = 14;
-  
-  ctx.save();
-  ctx.font = `${fontSize}px Arial`;
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-  ctx.textAlign = 'right';
-  
-  const x = canvas.width - 20;
-  const y = canvas.height - 20;
-  
-  ctx.fillText(watermarkText, x, y);
-  ctx.restore();
+  // Watermark disabled - everyone gets clean images
+  return;
 }
 
 /**
- * Get usage stats for display
+ * Get usage stats for display (disabled for now)
  */
 export function getUsageStats() {
-  if (isPremiumUser()) {
-    return {
-      type: 'premium',
-      message: 'Premium: Unlimited access',
-    };
-  }
-
-  const sessionCount = parseInt(localStorage.getItem(STORAGE_KEYS.sessionCount) || '0');
-  const dailyCount = parseInt(localStorage.getItem(STORAGE_KEYS.dailyCount) || '0');
-
+  // Everyone has unlimited access
   return {
     type: 'free',
-    sessionCount,
-    dailyCount,
-    sessionRemaining: Math.max(0, FREE_TIER_LIMITS.imagesPerSession - sessionCount),
-    dailyRemaining: Math.max(0, FREE_TIER_LIMITS.imagesPerDay - dailyCount),
-    message: `Free tier: ${Math.max(0, FREE_TIER_LIMITS.imagesPerSession - sessionCount)} images remaining this session`,
+    message: 'Free: Unlimited access',
   };
 }
 
