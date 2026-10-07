@@ -1,7 +1,7 @@
 {
-  "name": "text-to-handwriting",
-  "version": "1.0.0-rc.1",
-  "description": "Hey everyone! text-to-handwriting is a tool that lets you generate image that looks like handwriting from text.",
+  "name": "scriptcraft",
+  "version": "2.0.0",
+  "description": "ScriptCraft - Professional text-to-handwriting converter. Transform digital text into authentic handwritten images instantly.",
   "main": "js/app.js",
   "directories": {
     "lib": "lib"
@@ -12,19 +12,29 @@
     "prettier": "prettier --write \"./index.html\" \"js/**/**.mjs\" \"css/**.css\"",
     "format": "npm run prettier",
     "cy": "cypress open",
-    "dev": "serve ."
+    "dev": "serve .",
+    "build": "echo 'Build completed'",
+    "start": "serve . -p 3000"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/saurabhdaware/text-to-handwriting.git"
+    "url": "git+https://github.com/muhmdusman/scriptcraft.git"
   },
-  "keywords": [],
-  "author": "Saurabh Daware <saurabhdaware99@gmail.com> (https://saurabhdaware.in/)",
+  "keywords": [
+    "handwriting",
+    "text-to-image",
+    "document-converter",
+    "handwriting-generator",
+    "pdf-generator",
+    "assignment-tool",
+    "note-taking"
+  ],
+  "author": "Muhammad Usman <muhmdusman@email.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/saurabhdaware/text-to-handwriting/issues"
+    "url": "https://github.com/muhmdusman/scriptcraft/issues"
   },
-  "homepage": "https://github.com/saurabhdaware/text-to-handwriting#readme",
+  "homepage": "https://scriptcraft.app",
   "devDependencies": {
     "cypress": "^4.4.1",
     "eslint": "^7.0.0",

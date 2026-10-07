@@ -4,6 +4,13 @@ import {
   renderOutput
 } from './utils/generate-utils.mjs';
 import { createPDF } from './utils/helpers.mjs';
+import {
+  trackImageGeneration,
+  showUpgradeModal,
+  addWatermark,
+  isPremiumUser,
+} from './monetization.mjs';
+import { trackPDFDownload } from './analytics.mjs';
 
 const pageEl = document.querySelector('.page-a');
 let outputImages = [];
@@ -22,6 +29,10 @@ async function convertDIVToImage() {
 
   /** Function html2canvas comes from a library html2canvas which is included in the index.html */
   const canvas = await html2canvas(pageEl, options);
+  
+  /** Add watermark for free tier users */
+  const ctx = canvas.getContext('2d');
+  addWatermark(canvas, ctx);
 
   /** Send image data for modification if effect is scanner */
   if (document.querySelector('#page-effects').value === 'scanner') {
@@ -43,6 +54,23 @@ async function convertDIVToImage() {
  * This is the function that gets called on clicking "Generate Image" button.
  */
 export async function generateImages() {
+  // Check usage limits
+  const usageCheck = trackImageGeneration();
+  
+  if (!usageCheck.allowed) {
+    showUpgradeModal(usageCheck.reason);
+    alert(usageCheck.message);
+    return;
+  }
+  
+  // Show remaining count for free users
+  if (usageCheck.remaining !== 'unlimited' && usageCheck.remaining <= 2) {
+    const continueGen = confirm(
+      `You have ${usageCheck.remaining} images remaining this session. Continue?`
+    );
+    if (!continueGen) return;
+  }
+  
   applyPaperStyles();
   pageEl.scroll(0, 0);
 
@@ -92,6 +120,19 @@ export async function generateImages() {
   removePaperStyles();
   renderOutput(outputImages);
   setRemoveImageListeners();
+  
+  // Update usage display in app.mjs
+  if (typeof window.updateUsageDisplay === 'function') {
+    window.updateUsageDisplay();
+  }
+  
+  // Track conversion
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'image_generated', {
+      pages: totalPages,
+      tier: isPremiumUser() ? 'premium' : 'free',
+    });
+  }
 }
 
 /**
@@ -131,7 +172,13 @@ export const moveRight = (index) => {
 /**
  * Downloads generated images as PDF
  */
-export const downloadAsPDF = () => createPDF(outputImages);
+export const downloadAsPDF = () => {
+  trackPDFDownload({
+    pageCount: outputImages.length,
+    tier: isPremiumUser() ? 'premium' : 'free',
+  });
+  createPDF(outputImages);
+};
 
 /**
  * Sets event listeners for close button on output images.
